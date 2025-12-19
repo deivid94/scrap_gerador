@@ -1,27 +1,34 @@
-// import chromiune from "playwright-chromium";
+
+
 
 import { chromium } from "playwright";
 
 export async function fetchInfoGerador(page) {
-    const dadosGerador = [];
-    const dadosDoGerador = page.locator('class[name="infotable"]')
-    const infotable = dadosDoGerador.isVisible  
-    
+    const dadosDoGerador = await page.locator('.infotable2').isVisible
+    const isVisible =  await dadosDoGerador
 
-    if (!infotable) {
+       if (!isVisible) {
         return "Os dados do gerador nao foram carregados corretamente";
     }
-    
-    
-   
-    const dados = await page.locator('td.lable').evaluateAll(elementos => elementos.map(td => td.innerText));
-    console.log(dados)
+    const itemsGerador = page.locator('.infotable2').filter({hasText:'Engine'})
+    const tabelasDoGerador = itemsGerador.locator('td tr')
 
-    for (dado of dados){
-        console.log(dado)
+    console.log(await itemsGerador.highlight()); 
+    console.log (await tabelasDoGerador.highlight())
+
+    await page.waitForTimeout(2000)
+
+    const linhas =  await tabelasDoGerador.allInnerTexts()
+
+    for (const  linha of linhas){
+        const DadosExtraidor = []
+
+        const [chave, valor] = linha.split(':')
+        DadosExtraidor.push(chave, valor)
+        console.log(DadosExtraidor)
     }
-    }
-  
+    
     
 
 
+}

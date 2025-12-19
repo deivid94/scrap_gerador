@@ -39,7 +39,7 @@ try {
         fetchInfoGerador(page)
      }
      
-    fetchInfoGerador(page);
+  fetchInfoGerador(page)
 
 //
 }catch(error){
@@ -48,4 +48,4 @@ try {
     //await browser.close();
 }   
     }
-console.log (await acessarPaginaGerador())
+await acessarPaginaGerador()

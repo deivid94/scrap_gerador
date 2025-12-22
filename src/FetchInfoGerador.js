@@ -13,22 +13,20 @@ export async function fetchInfoGerador(page) {
     const itemsGerador = page.locator('.infotable2').filter({hasText:'Engine'})
     const tabelasDoGerador = itemsGerador.locator('td tr')
 
-    console.log(await itemsGerador.highlight()); 
-    console.log (await tabelasDoGerador.highlight())
-
+ 
     await page.waitForTimeout(2000)
+    const dadosExtraidos = []
 
     const linhas =  await tabelasDoGerador.allInnerTexts()
 
     for (const  linha of linhas){
-        const DadosExtraidor = []
-
-        const [chave, valor] = linha.split(':')
-        DadosExtraidor.push(chave, valor)
-        console.log(DadosExtraidor)
+        const [chave, valor] = linha.split("\t")
+        dadosExtraidos.push(chave, valor)
+        
     }
     
+    console.log (dadosExtraidos)    
+    return dadosExtraidos
     
-
-
 }
+ 

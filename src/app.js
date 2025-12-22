@@ -1,5 +1,7 @@
 import { chromium } from "playwright";
 import { fetchInfoGerador } from "./FetchInfoGerador.js";
+import { fetchStatusGerador } from "./FetchStatusGerador.js";
+import { error } from "node:console";
 
 
 
@@ -36,11 +38,13 @@ try {
     const loginSucesso = page.locator('div[id="logindetail"]')?.isVisible
 
      if (!paginaCarregada && !loginSucesso){
-        fetchInfoGerador(page)
+        return (console.error(error),"A pagina nao carregou, corretamente ou o login falhou")
+        
      }
      
-  fetchInfoGerador(page)
-
+    fetchInfoGerador(page)
+    console.log (fetchStatusGerador(page))
+  
 //
 }catch(error){
     console.log(error.message);

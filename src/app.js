@@ -1,55 +1,49 @@
-import { chromium } from "playwright";
-import { fetchInfoGerador } from "./FetchInfoGerador.js";
-import { fetchStatusGerador } from "./FetchStatusGerador.js";
-import { error } from "node:console";
+import { chromium } from 'playwright';
+import { fetchInfoGerador } from './FetchInfoGerador.js';
+import { fetchStatusGerador } from './FetchStatusGerador.js';
+import { error } from 'node:console';
 
-
-
-
-const url = "http://10.35.4.253"
-const username = "infofull";
-const senha = "simmais10";
-
+const url = 'http://10.35.4.253';
+const username = 'infofull';
+const senha = 'simmais10';
 
 async function acessarPaginaGerador() {
-
-    const browser = await chromium.launch({headless: false});
-    const page = await browser.newPage();
-try {
-    console.log (`acessando a pagina ${url}`);
-    await page.goto(url, {waitUntil : "networkidle0"});
+  const browser = await chromium.launch({ headless: true });
+  const page = await browser.newPage();
+  try {
+    console.log(`acessando a pagina ${url}`);
+    await page.goto(url, { waitUntil: 'networkidle0' });
 
     const localDeLogin = page.locator('input[name="username"]');
     const localDeSenha = page.locator('input[name="password"]');
     const botaoLogon = page.locator('input[name="login"]');
-    
 
-    
     await localDeLogin.fill(username);
     await localDeSenha.fill(senha);
     await page.waitForSelector('input[name="login"]');
-    await page.waitForTimeout(2000)
+    await page.waitForTimeout(2000);
     await botaoLogon.click();
-    
 
+    const paginaCarregada = await page.evaluate(
+      () => document.readyState === 'loading'
+    );
+    const loginSucesso = page.locator('div[id="logindetail"]')?.isVisible;
 
-    
-    const paginaCarregada = await page.evaluate(() => document.readyState === 'loading');
-    const loginSucesso = page.locator('div[id="logindetail"]')?.isVisible
-
-     if (!paginaCarregada && !loginSucesso){
-        return (console.error(error),"A pagina nao carregou, corretamente ou o login falhou")
-        
-     }
-     
-    fetchInfoGerador(page)
-    console.log (fetchStatusGerador(page))
-  
-//
-}catch(error){
-    console.log(error.message);
-} finally{
-    //await browser.close();
-}   
+    if (!paginaCarregada && !loginSucesso) {
+      return (
+        console.error(error),
+        'A pagina nao carregou, corretamente ou o login falhou'
+      );
     }
-await acessarPaginaGerador()
+
+    await fetchInfoGerador(page);
+    await fetchStatusGerador(page);
+
+    //
+  } catch (error) {
+    console.log(error.message);
+  } finally {
+    //await browser.close();
+  }
+}
+await acessarPaginaGerador();

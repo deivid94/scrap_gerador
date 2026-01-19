@@ -1,23 +1,36 @@
-import { chromium } from "playwright";
+import { fetchInfoGerador } from './FetchInfoGerador.js';
 
-export async function   fetchStatusGerador(page) {  
+export async function fetchStatusGerador(page) {
+  const dadosDoGerador = await fetchInfoGerador(page);
 
-    const statusOnOffAutoGerador = await  page.locator('controls')
-    const isVisible = await statusOnOffAutoGerador.isVisible()
+  const statusOnOffAutoGerador = await page.locator('.controls');
+  const isVisible = await statusOnOffAutoGerador.isVisible;
 
-    
-     if (!isVisible){
+  if (!isVisible) {
+    return 'OS DADOS DO GERADOR NAO FORAM CARREGADOS CORRETAMENTE';
+    //
+  }
 
-        return "Os dados do gerador nao foram carregados corretamente";
-     }
+  await page.waitForTimeout(2000);
+  const dataEngine = {};
 
-    const LEDOn = await statusOnOffAutoGerador.locator('div').filter({hasText:"gobutton"}).isVisible
-    const LEDOff = await statusOnOffAutoGerador.locator('div').filter({hasText:"autobutton"}).isVisible
-    const LEDAuto = await statusOnOffAutoGerador.locator('div').filter({hasText:"offbutton"}).isVisible
-
-     console,log ("Estou, no fetchStatusGerador: ")
-     console.log (LEDOn, LEDOff, LEDAuto)
-
-     
-    
+  const engineSpeed = 'Engine Speed';
+  const rpmCompare = '100RPM';
+  for (let i = 0; i < dadosDoGerador.length; i += 2) {
+    dataEngine[dadosDoGerador[i]] = dadosDoGerador[i + 1];
+    if (dataEngine[dadosDoGerador[i]] === '0RPM') {
+      const speedRPM = dataEngine[engineSpeed];
+      if (speedRPM > rpmCompare) {
+        return (
+          'O Gerador esta ligado e a velocidade de rotacao e de',
+          speedRPM
+        );
+      } else {
+        return (
+          'O gerador nao esta ligado e a velocidade de rotacao e de',
+          speedRPM
+        );
+      }
+    }
+  }
 }

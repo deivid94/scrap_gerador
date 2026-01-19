@@ -1,0 +1,35 @@
+name: CI Pipeline # Nome do fluxo
+
+on:
+  push:
+    branches: [ "main", "master" ] # Roda quando houver push nestas branches
+  pull_request:
+    branches: [ "main", "master" ] # Roda quando abrirem um PR para estas branches
+
+jobs:
+  build-and-validate:
+    runs-on: ubuntu-latest # O sistema operacional do robô (Linux)
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x] # Testa em versões diferentes do Node (opcional, mas recomendado)
+
+    steps:
+    - name: Baixar o código (Checkout)
+      uses: actions/checkout@v4
+
+    - name: Configurar Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm' # Faz o cache das dependências para ser mais rápido
+
+    - name: Instalar dependências
+      run: npm ci # 'ci' é melhor que 'install' para pipelines (mais rápido e seguro)
+
+    - name: Verificar Linting (ESLint + Prettier)
+      run: npm run lint # Certifique-se que você tem esse script no package.json
+
+    # Se você tiver testes configurados (como Jest), descomente a linha abaixo:
+    # - name: Rodar Testes
+    #   run: npm test

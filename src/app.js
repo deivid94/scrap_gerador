@@ -2,6 +2,7 @@ import { chromium } from 'playwright';
 import { fetchInfoGerador } from './FetchInfoGerador.js';
 import { fetchStatusGerador } from './FetchStatusGerador.js';
 import { error } from 'node:console';
+import  ZabbixSender  from './ZabbixSender.js';
 
 const url = 'http://10.35.4.253';
 const username = 'infofull';
@@ -38,6 +39,9 @@ async function acessarPaginaGerador() {
 
     await fetchInfoGerador(page);
     await fetchStatusGerador(page);
+    await ZabbixSender(fetchInfoGerador(page), fetchStatusGerador(page))
+  
+
 
     //
   } catch (error) {

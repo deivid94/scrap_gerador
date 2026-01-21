@@ -8,7 +8,7 @@ export async function fetchStatusGerador(page) {
 
   if (!isVisible) {
     return 'OS DADOS DO GERADOR NAO FORAM CARREGADOS CORRETAMENTE';
-    //
+    
   }
 
   await page.waitForTimeout(2000);

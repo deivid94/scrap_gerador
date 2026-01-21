@@ -2,6 +2,8 @@
 
 FROM mcr.microsoft.com/playwright:v1.57.0-jammy
 
+RUN apt-get update && apt-get install -y zabbix-sender && rm -rf /var/lib/apt/lists/*
+
 #diretorio de trabalho
 WORKDIR /app
 

@@ -1,6 +1,6 @@
 #definir imagem base
 
-FROM node:18-alpine
+FROM mcr.microsoft.com/playwright:v1.49.0-jammy
 
 #diretorio de trabalho
 WORKDIR /app
